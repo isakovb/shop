@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Sofa\Eloquence\Eloquence;
 
-class Category extends Model
+class Subcategory extends Model
 {
     use SoftDeletes;
     use Eloquence;
@@ -26,15 +26,8 @@ class Category extends Model
     public function products(){
       return $this->belongsToMany('App\Models\Product', 'categories_products', 'category_id', 'product_id');
     }
-    // public function subcategories()
-    // {
-    //     return $this->belongsTo(self::class, 'parent_id', 'id');
-    // }
-    // public function parent()
-    // {
-    //     return $this->hasMany(self::class, 'id', 'parent_id');
-    // }
-    public function subcategories(){
-      return $this->hasMany('App\Models\Subcategory', 'parent_id', 'id');
+
+    public function category(){
+      return $this->belongsTo('App\Models\Category', 'parent_id', 'id');
     }
 }

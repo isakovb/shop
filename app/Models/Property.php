@@ -20,7 +20,4 @@ class Property extends Model
     public function subproperty(){
       return $this->hasMany('App\Models\Property', 'parent_id', 'id');
     }
-    public function products(){
-        return $this->belongsToMany('App\Models\Product', 'products_properties', 'property_id', 'product_id')
-    }
 }

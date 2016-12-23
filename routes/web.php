@@ -10,10 +10,10 @@
 | to using a Closure or controller method. Build something great!
 |
 */
-
-Route::get('/search', 'Search@index');
-Route::get('/{id?}', 'Search@index');
-
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/search', 'SearchController@products');
+Route::get('/autocomplete', 'SearchController@suggestion');
+Route::get('/dictionary_cron', 'CronController@dictionary');
+Route::get('/{id?}', 'SearchController@index');

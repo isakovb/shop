@@ -164,6 +164,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class, //HTML forms
         Spatie\Fractal\FractalServiceProvider::class, //transformers
+        Sofa\Eloquence\ServiceProvider::class,
         /*
          * Package Service Providers...
          */

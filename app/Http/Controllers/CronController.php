@@ -2,44 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Query;
+use App\Models\Dictionary;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\Property;
+use App\Models\Value;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Schema;
 use DB;
 
-class Search extends Controller
+class CronController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function dictionary()
     {
-        $data = [];
-        $query = Input::get('query');
-        $query = substr($query, 0, 64);
-        $query = preg_replace('/[^\p{L}0-9 ]/iu','',$query);
-        $queryModel = new Query;
-
-        if(!empty($query)){
-            $queries = $queryModel->where('query','LIKE','%'.$query.'%');   
-            $exact_match = $queryModel->where('query','LIKE', $query);
+        $categories = Category::select('name')->distinct()->get()->toArray();
+        $products = Product::select('name')->distinct()->get()->toArray();
+        $merge = array_merge($categories,$products);
+        $dictionaries = [];
+        foreach($merge as $m) $dictionaries[] = $m['name'];
+        $dictionaries = array_unique($dictionaries);
+        foreach($dictionaries as $d){
+          $dictionary = new Dictionary;
+          if($dictionary->where('name', $d)->first() == null){
+          $dictionary->name = $d;
+          $dictionary->save();
+          }
         }
-
-        $data = $queries->get()->toArray();
-        $exact = $exact_match->get()->toArray();
-        if(count($exact) < 1){
-            $queryModel->query = $query;
-            $queryModel->save();
-        }else{
-            $exact = reset($exact);
-            $queryModel->where('id', $exact['id'])
-                       ->update(['weight' => DB::raw($exact['weight']+1)]);
-        }
-
-        return response()->json(array('data' => $data), 200);
+        return response()->json(array('result' => 'success'), 200);
     }
 
     /**
